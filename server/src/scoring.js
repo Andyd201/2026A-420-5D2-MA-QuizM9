@@ -36,5 +36,20 @@ export function calculateScore({ isCorrect, responseTimeMs, questionDurationMs, 
   //
   // Les cinq premières vérifications de « npm run verifier » testent cette
   // fonction directement, sans serveur : commencez ici.
+  if (!isCorrect) {
+    return 0;
+  }
+  if (responseTimeMs > questionDurationMs) {
+    return 0;
+  }
+  if (isCorrect) {
+    let score = 5;
+    const rapidityBonus = Math.floor(3 * (1 - responseTimeMs / questionDurationMs));
+    score += Math.max(0, rapidityBonus);
+    if (isFirstCorrectAnswer) {
+      score += 2;
+    }
+    return score;
+  }
   return 0;
 }
