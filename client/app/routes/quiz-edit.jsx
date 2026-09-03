@@ -1,4 +1,4 @@
-import { Form, Link, useLoaderData } from 'react-router';
+import { Form, Link, data, useActionData, useLoaderData } from 'react-router';
 import { API_URL } from '../api-url.js';
 
 /**
@@ -8,46 +8,68 @@ import { API_URL } from '../api-url.js';
  * Deux exports pour React Router : le loader (lire le questionnaire, comme
  * quiz-details.jsx) et l'action (recevoir les formulaires de la page).
  */
-
-/**
- * TODO (jalon ②, première partie) : le loader.
- *
- * Exactement celui de quiz-details.jsx : GET ${API_URL}/api/quizzes/:id,
- * 404 si le questionnaire n'existe pas, sinon le JSON.
- */
 export async function loader({ params }) {
-  throw new Response('À faire : le loader de l’éditeur.', { status: 501 });
+  const response = await fetch(`${API_URL}/api/quizzes/${params.id}`);
+  if (!response.ok) {
+    throw new Response('Questionnaire introuvable.', { status: 404 });
+  }
+  return response.json();
 }
 
 /**
- * TODO (jalon ②, deuxième partie) : l'action qui ajoute une question.
- *
- * Le formulaire envoie : text, durationSeconds, choice1 à choice4 (texte de
- * chaque choix, possiblement vide) et correct (le numéro du bon choix, 1 à
- * 4, ou rien si aucun bouton radio n'est coché).
- *
- * 1. Lire le formulaire : const formData = await request.formData().
- * 2. Construire le tableau des choix, en ignorant les champs vides :
- *      const choices = [1, 2, 3, 4]
- *        .map((n) => ({ text: formData.get(`choice${n}`) ?? '',
- *                       isCorrect: formData.get('correct') === String(n) }))
- *        .filter((c) => c.text.trim() !== '');
- * 3. Appeler POST ${API_URL}/api/quizzes/${params.id}/questions avec le
- *    corps JSON { text, durationSeconds: Number(...), choices }.
- * 4. Si l'API répond 400 : return data({ error: body.error }, { status: 400 }).
- * 5. Sinon : return { added: true }. Pas de redirection : React Router
- *    rejoue le loader, et la nouvelle question apparaît dans la page.
- *
- * TODO (jalon ④) : le même formulaire de page peut porter
- * plusieurs boutons. Un champ caché « intent » dit lequel a été pressé :
- * 'add' (ajouter) ou 'delete' (retirer la question formData.get('questionId'),
- * par DELETE ${API_URL}/api/quizzes/${params.id}/questions/${questionId}).
+ * Une seule action pour la page, deux formulaires : le champ caché
+ * « intent » dit lequel a été envoyé.
  */
+export async function action({ request, params }) {
+  const formData = await request.formData();
+
+  if (formData.get('intent') === 'delete') {
+    return deleteQuestion(params.id, formData.get('questionId'));
+  }
+  return addQuestion(params.id, formData);
+}
+
+async function addQuestion(quizId, formData) {
+  // Les quatre champs de choix ; les vides ne sont pas envoyés.
+  const choices = [1, 2, 3, 4]
+    .map((n) => ({
+      text: formData.get(`choice${n}`) ?? '',
+      isCorrect: formData.get('correct') === String(n),
+    }))
+    .filter((c) => c.text.trim() !== '');
+
+  const response = await fetch(`${API_URL}/api/quizzes/${quizId}/questions`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      text: formData.get('text'),
+      durationSeconds: Number(formData.get('durationSeconds')),
+      choices,
+    }),
+  });
+  const body = await response.json();
+
+  if (!response.ok) {
+    return data({ error: body.error }, { status: response.status });
+  }
+  // Pas de redirection : React Router rejoue le loader, la question apparaît.
+  return { added: true };
+}
+
+async function deleteQuestion(quizId, questionId) {
+  const response = await fetch(`${API_URL}/api/quizzes/${quizId}/questions/${questionId}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    const body = await response.json();
+    return data({ error: body.error }, { status: response.status });
+  }
+  return { deleted: true };
+}
 
 export default function QuizEdit() {
   const quiz = useLoaderData();
-  // TODO (jalon ③) : const actionData = useActionData(); puis afficher
-  // actionData?.error dans un <p className="error">.
+  const actionData = useActionData();
 
   return (
     <main className="screen">
@@ -57,6 +79,8 @@ export default function QuizEdit() {
         {' · '}
         <Link to={`/quizzes/${quiz.id}`}>Voir le questionnaire</Link>
       </p>
+
+      {actionData?.error && <p className="error">{actionData.error}</p>}
 
       {quiz.questions.map((question, i) => (
         <section key={question.id} className="card question row">
@@ -68,8 +92,11 @@ export default function QuizEdit() {
               {question.durationSeconds} secondes · {question.choices.length} choix
             </p>
           </div>
-          {/* TODO (jalon ④) : un <Form method="post"> avec
-              intent=delete et questionId, et un bouton Retirer. */}
+          <Form method="post">
+            <input type="hidden" name="intent" value="delete" />
+            <input type="hidden" name="questionId" value={question.id} />
+            <button className="secondary">Retirer</button>
+          </Form>
         </section>
       ))}
 
