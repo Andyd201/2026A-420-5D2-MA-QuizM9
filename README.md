@@ -26,20 +26,17 @@ npm run dev     # démarre le serveur (port 3000) et le client (port 5173)
 
 Ouvrez <http://localhost:5173>.
 
-## Vérifier
+## Tester
 
 ```bash
-npm run verifier   # avec npm run dev qui tourne dans un autre terminal
+npm test
 ```
 
-## Avec Docker (semaine 3)
+## Avec Docker
 
-Sur une machine où seul Docker est installé :
+Sur une machine où Docker est installé :
 
 ```bash
 docker compose up --build
 ```
 
-Le client répond sur le port 5173, l'API sur le port 3000, et la base SQLite
-vit dans le volume `quizm9-data`. Voir `compose.yml`, `server/Dockerfile` et
-`client/Dockerfile`.
