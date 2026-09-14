@@ -99,9 +99,9 @@ try {
   process.exit(1);
 }
 
-// ── 2. Jalon ① — le schéma est chargé, les questionnaires se lisent ───────
+// ── 2. Jalon 1 — le schéma est chargé, les questionnaires se lisent ───────
 
-section('Jalon ① — schema.sql et les questionnaires');
+section('Jalon 1 — schema.sql et les questionnaires');
 
 const EXPECTED_TABLES = ['account', 'quiz', 'question', 'choice', 'game', 'player', 'answer'];
 const tables = inDatabase((db) =>
@@ -143,9 +143,9 @@ check(
 r = await request('GET', '/api/quizzes/999999');
 check('GET sur un questionnaire inconnu → 404 { error }', r.status === 404 && r.data?.error);
 
-// ── 3. Jalon ② — créer une partie, et la voir dans la base ────────────────
+// ── 3. Jalon 2 — créer une partie, et la voir dans la base ────────────────
 
-section('Jalon ② — créer une partie');
+section('Jalon 2 — créer une partie');
 
 r = await request('POST', '/api/games', { quizId: 999999 });
 check('POST /api/games sur un questionnaire inconnu → 404', r.status === 404);
@@ -167,9 +167,9 @@ check(
 );
 check('la partie porte un created_at (horodatage du serveur)', gameRow?.created_at > 0);
 
-// ── 4. Jalon ③ — inscrire des joueurs, et les voir dans la base ───────────
+// ── 4. Jalon 3 — inscrire des joueurs, et les voir dans la base ───────────
 
-section('Jalon ③ — inscrire un joueur');
+section('Jalon 3 — inscrire un joueur');
 
 r = await request('GET', `/api/games/${code}`);
 check(
@@ -459,7 +459,7 @@ const remaining = inDatabase((db) =>
   db.prepare('SELECT COUNT(*) AS n FROM question WHERE quiz_id = ?').get(quizRow?.id ?? -1).n,
 );
 check(
-  'jalon ④ : intent=delete retire la question',
+  'jalon 4 : intent=delete retire la question',
   form?.status === 200 && remaining === 0,
 );
 
