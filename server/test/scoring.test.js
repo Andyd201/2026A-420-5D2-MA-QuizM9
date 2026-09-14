@@ -3,7 +3,7 @@
  * de base. Lancez-les avec `npm test` depuis la racine.
  *
  * Les cinq premiers sont ceux du harnais, réécrits avec node:test. À vous
- * d'ajouter les cas limites (jalon ①) : chaque test.todo est un test à écrire.
+ * d'ajouter les cas limites (jalon 1) : chaque test.todo est un test à écrire.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -40,7 +40,7 @@ test('bonne réponse après l’échéance = 0', () => {
   assert.equal(score({ responseTimeMs: 25000 }), 0);
 });
 
-// ── Jalon ① : les cas limites ─────────────────────────────────────────────
+// ── Jalon 1 : les cas limites ─────────────────────────────────────────────
 //
 // Remplacez chaque test.todo par un vrai test. Les règles sont dans
 // scoring.js ; le mot d'ordre : « à la frontière, que se passe-t-il ? »

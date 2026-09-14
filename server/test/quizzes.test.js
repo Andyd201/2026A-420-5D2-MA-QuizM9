@@ -2,8 +2,8 @@
  * Tests d'INTÉGRATION de l'espace auteur : on démarre l'API sur une base
  * temporaire et on lui parle en HTTP, comme le fait le client.
  *
- * Le premier test est fourni. Les test.todo sont le jalon ② ; le dernier
- * (« un questionnaire sans question ») est le jalon ③ : il doit ÉCHOUER
+ * Le premier test est fourni. Les test.todo sont le jalon 2 ; le dernier
+ * (« un questionnaire sans question ») est le jalon 3 : il doit ÉCHOUER
  * avant que vous corrigiez la route POST /api/games.
  */
 import { test, before, after } from 'node:test';
@@ -29,12 +29,12 @@ test('un titre valide crée le questionnaire (201)', async () => {
   assert.equal(typeof data.id, 'number');
 });
 
-// ── Jalon ② ───────────────────────────────────────────────────────────────
+// ── Jalon 2 ───────────────────────────────────────────────────────────────
 
 test.todo('une question sans bonne réponse est refusée (400)');
 test.todo('une question avec deux bonnes réponses est refusée (400)');
 test.todo('une question valide est ajoutée et apparaît dans GET /api/quizzes/:id');
 
-// ── Jalon ③ : d'abord le test qui échoue, ensuite la correction ───────────
+// ── Jalon 3 : d'abord le test qui échoue, ensuite la correction ───────────
 
 test.todo('une partie sur un questionnaire sans question est refusée (400)');
