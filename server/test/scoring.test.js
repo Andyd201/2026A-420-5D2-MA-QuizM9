@@ -42,10 +42,9 @@ test('bonne réponse après l’échéance = 0', () => {
 
 // ── Jalon 1 : les cas limites ─────────────────────────────────────────────
 //
-// Remplacez chaque test.todo par un vrai test. Les règles sont dans
-// scoring.js ; le mot d'ordre : « à la frontière, que se passe-t-il ? »
+// Remplacez chaque test.todo par un vrai test.
 
-test.todo('réponse exactement à l’échéance');
+test.todo('réponse exactement à l’échéance = 5 (acceptée, bonus rapidité 0)');
 test.todo('mauvaise réponse, même première et instantanée = 0');
 test.todo('première bonne réponse hors délai = 0 (pas de bonus)');
 test.todo('le bonus de rapidité ne dépasse jamais 3');
