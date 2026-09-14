@@ -6,7 +6,7 @@ import { fetchQuizzes } from '../api.js';
  * La liste de l'animateur : ses questionnaires. (Tous, en fait — les
  * comptes arrivent à la semaine 5.)
  *
- * TODO (partie 2, jalon ①) : passer du rendu côté client au rendu côté
+ * TODO (partie 2, jalon 1) : passer du rendu côté client au rendu côté
  * serveur. Pour l'instant, la page part vide et va chercher ses données
  * dans le navigateur, après le rendu — affichez la source de la page : les
  * questionnaires n'y sont pas. Reprenez le loader écrit ensemble au

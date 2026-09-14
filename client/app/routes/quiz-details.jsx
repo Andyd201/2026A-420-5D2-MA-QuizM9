@@ -6,7 +6,7 @@ import { fetchQuiz } from '../api.js';
  * Un questionnaire et ses questions — ce que l'animateur vérifie avant de
  * jouer. La bonne réponse est cochée : c'est la vue de l'AUTEUR.
  *
- * TODO (partie 2, jalon ②) : passer au rendu côté serveur, en vous calquant
+ * TODO (partie 2, jalon 2) : passer au rendu côté serveur, en vous calquant
  * sur le loader de la liste (/quizzes).
  *
  * 1. Exportez `loader` — elle reçoit { params }, et params.id est l'id de

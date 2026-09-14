@@ -7,7 +7,7 @@ import { db } from './db.js';
 // ── Les trois fonctions à écrire cette semaine ────────────────────────────
 
 /**
- * TODO (jalon ②) : insérer une partie et retourner son id.
+ * TODO (jalon 2) : insérer une partie et retourner son id.
  *
  * Un INSERT dans game — colonnes quiz_id, code et created_at ; state et
  * question_index ont des valeurs par défaut. Calquez recordAnswer, plus
@@ -20,7 +20,7 @@ export function createGame(quizId, code, createdAt) {
 }
 
 /**
- * TODO (jalon ③) : inscrire un joueur dans une partie et retourner son id.
+ * TODO (jalon 3) : inscrire un joueur dans une partie et retourner son id.
  *
  * Un INSERT dans player — colonnes game_id et nickname ; score part à 0
  * tout seul. Même modèle que createGame.
