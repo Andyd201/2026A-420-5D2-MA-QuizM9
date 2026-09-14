@@ -459,7 +459,7 @@ const remaining = inDatabase((db) =>
   db.prepare('SELECT COUNT(*) AS n FROM question WHERE quiz_id = ?').get(quizRow?.id ?? -1).n,
 );
 check(
-  'jalon ④ : intent=delete retire la question',
+  'jalon 4 : intent=delete retire la question',
   form?.status === 200 && remaining === 0,
 );
 

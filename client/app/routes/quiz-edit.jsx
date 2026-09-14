@@ -10,7 +10,7 @@ import { API_URL } from '../api-url.js';
  */
 
 /**
- * TODO (jalon ②, première partie) : le loader.
+ * TODO (jalon 2, première partie) : le loader.
  *
  * Exactement celui de quiz-details.jsx : GET ${API_URL}/api/quizzes/:id,
  * 404 si le questionnaire n'existe pas, sinon le JSON.
@@ -20,7 +20,7 @@ export async function loader({ params }) {
 }
 
 /**
- * TODO (jalon ②, deuxième partie) : l'action qui ajoute une question.
+ * TODO (jalon 2, deuxième partie) : l'action qui ajoute une question.
  *
  * Le formulaire envoie : text, durationSeconds, choice1 à choice4 (texte de
  * chaque choix, possiblement vide) et correct (le numéro du bon choix, 1 à
@@ -38,7 +38,7 @@ export async function loader({ params }) {
  * 5. Sinon : return { added: true }. Pas de redirection : React Router
  *    rejoue le loader, et la nouvelle question apparaît dans la page.
  *
- * TODO (jalon ④) : le même formulaire de page peut porter
+ * TODO (jalon 4) : le même formulaire de page peut porter
  * plusieurs boutons. Un champ caché « intent » dit lequel a été pressé :
  * 'add' (ajouter) ou 'delete' (retirer la question formData.get('questionId'),
  * par DELETE ${API_URL}/api/quizzes/${params.id}/questions/${questionId}).
@@ -46,7 +46,7 @@ export async function loader({ params }) {
 
 export default function QuizEdit() {
   const quiz = useLoaderData();
-  // TODO (jalon ③) : const actionData = useActionData(); puis afficher
+  // TODO (jalon 3) : const actionData = useActionData(); puis afficher
   // actionData?.error dans un <p className="error">.
 
   return (
@@ -68,7 +68,7 @@ export default function QuizEdit() {
               {question.durationSeconds} secondes · {question.choices.length} choix
             </p>
           </div>
-          {/* TODO (jalon ④) : un <Form method="post"> avec
+          {/* TODO (jalon 4) : un <Form method="post"> avec
               intent=delete et questionId, et un bouton Retirer. */}
         </section>
       ))}

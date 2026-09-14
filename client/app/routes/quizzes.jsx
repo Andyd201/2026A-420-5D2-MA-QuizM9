@@ -16,7 +16,7 @@ export async function loader() {
 }
 
 /**
- * TODO (jalon ①) : l'action qui crée un questionnaire.
+ * TODO (jalon 1) : l'action qui crée un questionnaire.
  *
  * React Router l'appelle quand le <Form method="post"> ci-dessous est
  * envoyé. Elle s'exécute sur le serveur, comme le loader.
@@ -62,7 +62,7 @@ export default function Quizzes() {
           Titre
           <input name="title" placeholder="Titre du questionnaire" required />
         </label>
-        {/* TODO (jalon ③) : afficher l'erreur renvoyée par l'action, s'il y en a une. */}
+        {/* TODO (jalon 3) : afficher l'erreur renvoyée par l'action, s'il y en a une. */}
         <button>Créer</button>
       </Form>
     </main>
