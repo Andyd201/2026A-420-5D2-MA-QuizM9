@@ -17,7 +17,7 @@ db.exec('PRAGMA journal_mode = WAL');
 db.exec('PRAGMA foreign_keys = ON');
 
 /**
- * TODO (jalon ①) : créer les tables, puis les remplir si la base est vide.
+ * TODO (jalon 1) : créer les tables, puis les remplir si la base est vide.
  *
  * 1. Lire le fichier schema.sql : readFileSync(chemin, 'utf8'). Le chemin
  *    se construit comme celui de quizm9.db ci-dessus, à partir de dataDir.
