@@ -35,8 +35,6 @@ export function initializeDatabase() {
     console.log('Database initialized with seed data.');
   }
 }
-  }
-}
 
 /**
  * Enveloppe des écritures qui doivent réussir ENSEMBLE. Si fn lève une

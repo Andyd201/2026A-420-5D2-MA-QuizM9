@@ -31,10 +31,63 @@ test('un titre valide crée le questionnaire (201)', async () => {
 
 // ── Jalon 2 ───────────────────────────────────────────────────────────────
 
-test.todo('une question sans bonne réponse est refusée (400)');
-test.todo('une question avec deux bonnes réponses est refusée (400)');
-test.todo('une question valide est ajoutée et apparaît dans GET /api/quizzes/:id');
+test('une question sans bonne réponse est refusée (400)', async () => {
+  const { data: quiz } = await api.request('POST', '/api/quizzes', { title: 'Sans bonne réponse' });
+  const { status, data } = await api.request('POST', `/api/quizzes/${quiz.id}/questions`, {
+    text: 'La capitale du Québec ?',
+    durationSeconds: 20,
+    choices: [
+      { text: 'Montréal', isCorrect: false },
+      { text: 'Québec', isCorrect: false },
+    ],
+  });
+  assert.equal(status, 400);
+  assert.equal(typeof data.error, 'string');
+});
+
+test('une question avec deux bonnes réponses est refusée (400)', async () => {
+  const { data: quiz } = await api.request('POST', '/api/quizzes', { title: 'Deux bonnes réponses' });
+  const { status, data } = await api.request('POST', `/api/quizzes/${quiz.id}/questions`, {
+    text: 'La capitale du Québec ?',
+    durationSeconds: 20,
+    choices: [
+      { text: 'Montréal', isCorrect: true },
+      { text: 'Québec', isCorrect: true },
+    ],
+  });
+  assert.equal(status, 400);
+  assert.equal(typeof data.error, 'string');
+});
+
+test('une question valide est ajoutée et apparaît dans GET /api/quizzes/:id', async () => {
+  const { data: quiz } = await api.request('POST', '/api/quizzes', { title: 'Capitales du monde' });
+  const { status: postStatus, data: created } = await api.request(
+    'POST',
+    `/api/quizzes/${quiz.id}/questions`,
+    {
+      text: 'La capitale du Québec ?',
+      durationSeconds: 20,
+      choices: [
+        { text: 'Montréal', isCorrect: false },
+        { text: 'Québec', isCorrect: true },
+      ],
+    },
+  );
+  assert.equal(postStatus, 201);
+  assert.equal(typeof created.id, 'number');
+
+  const { status, data } = await api.request('GET', `/api/quizzes/${quiz.id}`);
+  assert.equal(status, 200);
+  assert.equal(data.questions.length, 1);
+  assert.equal(data.questions[0].text, 'La capitale du Québec ?');
+  assert.equal(data.questions[0].choices.length, 2);
+});
 
 // ── Jalon 3 : d'abord le test qui échoue, ensuite la correction ───────────
 
-test.todo('une partie sur un questionnaire sans question est refusée (400)');
+test('une partie sur un questionnaire sans question est refusée (400)', async () => {
+  const { data: quiz } = await api.request('POST', '/api/quizzes', { title: 'Vide' });
+  const { status, data } = await api.request('POST', '/api/games', { quizId: quiz.id });
+  assert.equal(status, 400);
+  assert.equal(typeof data.error, 'string');
+});

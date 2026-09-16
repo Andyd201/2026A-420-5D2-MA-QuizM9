@@ -44,8 +44,26 @@ test('bonne réponse après l’échéance = 0', () => {
 //
 // Remplacez chaque test.todo par un vrai test.
 
-test.todo('réponse exactement à l’échéance = 5 (acceptée, bonus rapidité 0)');
-test.todo('mauvaise réponse, même première et instantanée = 0');
-test.todo('première bonne réponse hors délai = 0 (pas de bonus)');
-test.todo('le bonus de rapidité ne dépasse jamais 3');
-test.todo('le résultat est toujours un entier de 0 à 10');
+test('bonne réponse instantanée mais pas la première = 8 (5 + bonus rapidité 3)', () => {
+  assert.equal(score({ isFirstCorrectAnswer: false }), 8);
+});
+
+test('bonne réponse à mi-parcours mais pas la première = 6 (5 + bonus rapidité 1)', () => {
+  assert.equal(score({ responseTimeMs: 10000, isFirstCorrectAnswer: false }), 6);
+});
+
+test('bonne réponse à l’échéance = 5 (bonus rapidité 0)', () => {
+  assert.equal(score({ responseTimeMs: 20000 }), 5);
+});
+
+test('bonne réponse après l’échéance = 0 (pas de bonus)', () => {
+  assert.equal(score({ responseTimeMs: 25000, isFirstCorrectAnswer: true }), 0);
+});
+
+test('mauvaise réponse instantanée = 0 (pas de bonus)', () => {
+  assert.equal(score({ isCorrect: false, responseTimeMs: 0 }), 0);
+});
+
+test('mauvaise réponse à mi-parcours = 0 (pas de bonus)', () => {
+  assert.equal(score({ isCorrect: false, responseTimeMs: 10000 }), 0);
+});
