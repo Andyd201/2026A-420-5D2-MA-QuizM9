@@ -1,50 +1,63 @@
 /**
- * La connexion à la base. Un seul fichier SQLite, server/data/quizm9.db par
- * défaut ; la variable d'environnement DB_PATH permet de le placer ailleurs
- * (dans un conteneur, sur un volume : semaine 3).
+ * La connexion à la base. PostgreSQL est un SERVEUR, plus un fichier : on
+ * s'y connecte par une adresse, DATABASE_URL. La valeur par défaut est celle
+ * du service postgres de compose.yml, démarré par `docker compose up -d postgres`.
  *
- * Le fichier n'est pas versionné : chacun a le sien, régénéré au besoin.
- * Pour repartir à neuf : arrêtez le serveur et supprimez le fichier.
+ * Un Pool garde quelques connexions ouvertes et en prête une à chaque
+ * requête. Toute requête est ASYNCHRONE : elle part sur le réseau, la
+ * réponse revient plus tard, d'où les `await` partout dans repository/.
  */
-import { DatabaseSync } from 'node:sqlite';
-import { mkdirSync, readFileSync } from 'node:fs';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import pg from 'pg';
 
-const dataDir = new URL('../../data/', import.meta.url);
-const dbPath = process.env.DB_PATH ?? fileURLToPath(new URL('quizm9.db', dataDir));
+const { Pool, types } = pg;
 
-mkdirSync(dirname(dbPath), { recursive: true });
-export const db = new DatabaseSync(dbPath);
+// Les BIGINT (horodatages, COUNT(*)) arrivent en chaîne par défaut, parce
+// qu'un BIGINT peut dépasser ce qu'un Number représente. Pas les nôtres :
+// on les convertit en nombres.
+types.setTypeParser(types.builtins.INT8, Number);
 
-// Les lecteurs (le harnais, un autre processus) ne bloquent pas le serveur.
-db.exec('PRAGMA journal_mode = WAL');
-db.exec('PRAGMA foreign_keys = ON');
+const DATABASE_URL = process.env.DATABASE_URL ?? 'postgres://quizm9:quizm9@localhost:5432/quizm9';
+
+export const pool = new Pool({ connectionString: DATABASE_URL });
 
 /** Crée les tables (schema.sql), puis les remplit (seed.sql) si la base est vide. */
-export function initializeDatabase() {
-  const schema = readFileSync(fileURLToPath(new URL('schema.sql', dataDir)), 'utf8');
-  db.exec(schema);
+export async function initializeDatabase() {
+  const schema = await readSql('schema.sql');
+  await pool.query(schema);
 
-  const { n } = db.prepare('SELECT COUNT(*) AS n FROM quiz').get();
-  if (n === 0) {
-    const seed = readFileSync(fileURLToPath(new URL('seed.sql', dataDir)), 'utf8');
-    db.exec(seed);
+  const { rows } = await pool.query('SELECT COUNT(*) AS n FROM quiz');
+  if (rows[0].n === 0) {
+    await pool.query(await readSql('seed.sql'));
   }
 }
 
+async function readSql(name) {
+  const { readFile } = await import('node:fs/promises');
+  return readFile(new URL(`../../data/${name}`, import.meta.url), 'utf8');
+}
+
 /**
- * Enveloppe des écritures qui doivent réussir ENSEMBLE. Si fn lève une
- * erreur, tout est annulé (ROLLBACK) ; sinon tout est confirmé (COMMIT).
+ * Enveloppe des écritures qui doivent réussir ENSEMBLE. Une transaction vit
+ * sur UNE connexion : on en emprunte une au pool et on la passe à fn, qui
+ * doit s'en servir pour chaque requête. Si fn lève une erreur, tout est
+ * annulé (ROLLBACK) ; sinon tout est confirmé (COMMIT).
  */
-export function withTransaction(fn) {
-  db.exec('BEGIN');
+export async function withTransaction(fn) {
+  const client = await pool.connect();
   try {
-    const result = fn();
-    db.exec('COMMIT');
+    await client.query('BEGIN');
+    const result = await fn(client);
+    await client.query('COMMIT');
     return result;
   } catch (e) {
-    db.exec('ROLLBACK');
+    await client.query('ROLLBACK');
     throw e;
+  } finally {
+    client.release();
   }
+}
+
+/** Ferme les connexions ; les tests s'en servent pour finir proprement. */
+export function closeDatabase() {
+  return pool.end();
 }
