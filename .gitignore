@@ -2,8 +2,16 @@ node_modules/
 dist/
 build/
 .react-router/
+<<<<<<< HEAD
 .env
 
 # La base locale : chacun la sienne, régénérée par le serveur.
+=======
+
+# Les secrets : jamais dans le dépôt. Voir server/.env.example.
+.env
+
+# La base SQLite : celle des semaines 1 à 4, ou celle d'un poste sans Docker.
+>>>>>>> upstream/main
 server/data/*.db
 server/data/*.db-*

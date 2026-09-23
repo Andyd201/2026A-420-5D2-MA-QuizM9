@@ -2,16 +2,30 @@
  * LA porte d'entrée vers la base. La règle de la semaine 2, valable jusqu'à
  * la fin de la session : aucune requête SQL en dehors du dossier repository/.
  *
+<<<<<<< HEAD
  * La semaine 5, SQLite cède sa place à PostgreSQL : si tout le SQL est ici,
  * le changement reste confiné ici.
  */
 export { initializeDatabase, withTransaction } from './db.js';
+=======
+ * Semaine 5 : SQLite a cédé sa place à PostgreSQL. Tout le SQL étant ici, le
+ * changement est resté confiné ici ; le reste du serveur a seulement appris
+ * à attendre (`await`) ses réponses. SQLite reste disponible en secours,
+ * pour un poste sans Docker (voir db.js).
+ */
+export { closeDatabase, initializeDatabase, withTransaction } from './db.js';
+export { findAccount, findOrCreateAccount } from './accounts.js';
+>>>>>>> upstream/main
 export {
   addQuestion,
   createQuiz,
   deleteQuestion,
   getQuizWithQuestions,
   listQuizzes,
+<<<<<<< HEAD
+=======
+  listQuizzesForAccount,
+>>>>>>> upstream/main
 } from './quizzes.js';
 export {
   addPlayer,

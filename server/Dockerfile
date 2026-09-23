@@ -13,7 +13,12 @@ RUN npm ci -w server --omit=dev
 COPY server/ server/
 
 WORKDIR /app/server
+<<<<<<< HEAD
 # La base hors du code, dans /data : c'est là qu'on montera un volume.
 ENV PORT=3000 DB_PATH=/data/quizm9.db
+=======
+# La base n'est plus dans l'image : DATABASE_URL vient de compose.yml.
+ENV PORT=3000
+>>>>>>> upstream/main
 EXPOSE 3000
 CMD ["node", "src/server.js"]

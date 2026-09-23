@@ -11,7 +11,10 @@
   ],
   "scripts": {
     "dev": "concurrently -k -n server,client -c blue,green \"npm run dev -w server\" \"npm run dev -w client\"",
+<<<<<<< HEAD
     "verifier": "node server/verifier/verifier.mjs",
+=======
+>>>>>>> upstream/main
     "test": "npm test --workspaces --if-present"
   },
   "devDependencies": {

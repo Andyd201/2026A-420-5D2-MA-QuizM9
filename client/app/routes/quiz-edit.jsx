@@ -1,15 +1,28 @@
 import { Form, Link, data, useActionData, useLoaderData } from 'react-router';
+<<<<<<< HEAD
 import { API_URL } from '../api-url.js';
+=======
+import { apiFetch } from '../api-url.js';
+>>>>>>> upstream/main
 
 /**
  * L'éditeur de questionnaire : ajouter des questions, en retirer. Créer et
  * modifier un questionnaire sans toucher à SQL, c'est la semaine 3.
  *
  * Deux exports pour React Router : le loader (lire le questionnaire, comme
+<<<<<<< HEAD
  * quiz-details.jsx) et l'action (recevoir les formulaires de la page).
  */
 export async function loader({ params }) {
   const response = await fetch(`${API_URL}/api/quizzes/${params.id}`);
+=======
+ * quiz-details.jsx) et l'action (recevoir les formulaires de la page). Les
+ * deux passent par apiFetch : le cookie de session suit, et la semaine 6
+ * l'API s'en servira pour vérifier que l'éditeur est bien l'auteur.
+ */
+export async function loader({ request, params }) {
+  const response = await apiFetch(request, `/api/quizzes/${params.id}`);
+>>>>>>> upstream/main
   if (!response.ok) {
     throw new Response('Questionnaire introuvable.', { status: 404 });
   }
@@ -24,12 +37,21 @@ export async function action({ request, params }) {
   const formData = await request.formData();
 
   if (formData.get('intent') === 'delete') {
+<<<<<<< HEAD
     return deleteQuestion(params.id, formData.get('questionId'));
   }
   return addQuestion(params.id, formData);
 }
 
 async function addQuestion(quizId, formData) {
+=======
+    return deleteQuestion(request, params.id, formData.get('questionId'));
+  }
+  return addQuestion(request, params.id, formData);
+}
+
+async function addQuestion(request, quizId, formData) {
+>>>>>>> upstream/main
   // Les quatre champs de choix ; les vides ne sont pas envoyés.
   const choices = [1, 2, 3, 4]
     .map((n) => ({
@@ -38,7 +60,11 @@ async function addQuestion(quizId, formData) {
     }))
     .filter((c) => c.text.trim() !== '');
 
+<<<<<<< HEAD
   const response = await fetch(`${API_URL}/api/quizzes/${quizId}/questions`, {
+=======
+  const response = await apiFetch(request, `/api/quizzes/${quizId}/questions`, {
+>>>>>>> upstream/main
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
@@ -56,8 +82,13 @@ async function addQuestion(quizId, formData) {
   return { added: true };
 }
 
+<<<<<<< HEAD
 async function deleteQuestion(quizId, questionId) {
   const response = await fetch(`${API_URL}/api/quizzes/${quizId}/questions/${questionId}`, {
+=======
+async function deleteQuestion(request, quizId, questionId) {
+  const response = await apiFetch(request, `/api/quizzes/${quizId}/questions/${questionId}`, {
+>>>>>>> upstream/main
     method: 'DELETE',
   });
   if (!response.ok) {

@@ -1,4 +1,5 @@
 import { Link, useLoaderData } from 'react-router';
+<<<<<<< HEAD
 import { API_URL } from '../api-url.js';
 
 /**
@@ -10,6 +11,19 @@ import { API_URL } from '../api-url.js';
  */
 export async function loader({ params }) {
   const response = await fetch(`${API_URL}/api/quizzes/${params.id}`);
+=======
+import { apiFetch } from '../api-url.js';
+
+/**
+ * Un questionnaire et ses questions, ce que l'animateur vérifie avant de
+ * jouer. La bonne réponse est cochée : c'est la vue de l'AUTEUR.
+ *
+ * Rendu CÔTÉ SERVEUR, calqué sur le loader de la liste ; params.id vient
+ * de l'URL (/quizzes/:id). apiFetch transmet le cookie de session.
+ */
+export async function loader({ request, params }) {
+  const response = await apiFetch(request, `/api/quizzes/${params.id}`);
+>>>>>>> upstream/main
   if (!response.ok) {
     throw new Response('Questionnaire introuvable.', { status: 404 });
   }
